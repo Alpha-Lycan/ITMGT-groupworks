@@ -1,5 +1,4 @@
 
-from turtle import position
 from pymongo import MongoClient
 scp_dictlist=[]
 
