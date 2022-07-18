@@ -19,7 +19,7 @@ app = QApplication(sys.argv)
 window = QWidget()
 window.setWindowTitle('Statement of Cash Position')
 layout = QGridLayout()
-wanted_date='07/17/2022'
+wanted_date='7/18/22'
 wanted_date_entries=get_entries({"date":wanted_date})
 res=compute_values(wanted_date_entries,wanted_date_entries[0]["cash_in_bank"])
 #operating
@@ -50,15 +50,106 @@ for entry in wanted_date_entries:
             fin_in=True
         else:
             fin_out=True 
-layout.addWidget(QLabel('<b>Statement of Cash Position</b>'), 0,0,1,4)
-layout.addWidget(QLabel("<b>"+wanted_date+"</b>"), 2,0,1,4)
+current_row=0
+def next_row(current_row,increment):
+    current_row+=increment
+    return(current_row)
 
-#if net_op==True:
-layout.addWidget(QLabel("<b> Cash flows from operating activities</b>"), 3,0,1,2)
-#if net_inv==True:
-layout.addWidget(QLabel("<b> Cash flows from investing activities </b>"), 5,0,1,2)
-#if net_fin==True:
-layout.addWidget(QLabel("<b> Cash flows from financing activities </b>"), 7,0,1,2)
+current_row=0
+
+layout.addWidget(QLabel('<b>Statement of Cash Position</b>'), current_row,0,1,4)
+current_row=next_row(current_row,2)
+layout.addWidget(QLabel("<b>"+wanted_date+"</b>"), current_row,0,1,4)
+
+if (op_in or op_out) == True:
+    current_row=next_row(current_row,1)
+    layout.addWidget(QLabel("<b> Cash flows from operating activities</b>"),current_row,0,1,2)
+    if op_in ==True: 
+        current_row=next_row(current_row,1)
+        layout.addWidget(QLabel("Inflow"), current_row,0,1,2)
+        for i in range(len(wanted_date_entries)): 
+            if wanted_date_entries[i]["category"]=='Operating' and wanted_date_entries[i]["flow_type"]=="Inflow": 
+                current_row=next_row(current_row,1)
+                layout.addWidget(QLabel(wanted_date_entries[i]['entry_title']), current_row,1,1,2)
+                layout.addWidget(QLabel(str(wanted_date_entries[i]['amount'])), current_row,3)
+            if i == len(wanted_date_entries)-1:
+                layout.addWidget(QLabel(str(res[0])), current_row,4)
+    if op_out==True: 
+        current_row=next_row(current_row,1)
+        layout.addWidget(QLabel("Outflow"), current_row,0,1,2)
+        for i in range(len(wanted_date_entries)):  
+            if wanted_date_entries[i]["category"]=='Operating' and wanted_date_entries[i]["flow_type"]=="Outflow":
+                current_row=next_row(current_row,1) 
+                layout.addWidget(QLabel(wanted_date_entries[i]['entry_title']), current_row,1,1,2)
+                layout.addWidget(QLabel(str(wanted_date_entries[i]['amount'])), current_row,3)
+            if i == len(wanted_date_entries)-1:
+                layout.addWidget(QLabel(str(res[1])), current_row,4)
+    current_row=next_row(current_row,1)
+    layout.addWidget(QLabel("Net cash from operating activities"), current_row,0,1,2)
+    layout.addWidget(QLabel(str(res[2])), current_row,4)
+if (inv_in or inv_out)==True:
+    current_row=next_row(current_row,1)
+    layout.addWidget(QLabel("<b> Cash flows from investing activities </b>"), current_row,0,1,2)
+    if inv_in ==True: 
+        current_row=next_row(current_row,1)
+        layout.addWidget(QLabel("Inflow"), current_row,0,1,2)
+        for i in range(len(wanted_date_entries)): 
+            if wanted_date_entries[i]["category"]=='Investing' and wanted_date_entries[i]["flow_type"]=="Inflow": 
+                current_row=next_row(current_row,1)
+                layout.addWidget(QLabel(wanted_date_entries[i]['entry_title']), current_row,1,1,2)
+                layout.addWidget(QLabel(str(wanted_date_entries[i]['amount'])), current_row,3)
+            if i == len(wanted_date_entries)-1:
+                layout.addWidget(QLabel(str(res[3])), current_row,4)
+    if inv_out==True: 
+        current_row=next_row(current_row,1)
+        layout.addWidget(QLabel("Outflow"), current_row,0,1,2)
+        for i in range(len(wanted_date_entries)): 
+            if wanted_date_entries[i]["category"]=='Investing' and wanted_date_entries[i]["flow_type"]=="Outflow": 
+                current_row=next_row(current_row,1)
+                layout.addWidget(QLabel(wanted_date_entries[i]['entry_title']), current_row,1,1,2)
+                layout.addWidget(QLabel(str(wanted_date_entries[i]['amount'])), current_row,3)
+            if i == len(wanted_date_entries)-1:
+                layout.addWidget(QLabel(str(res[4])), current_row,4)
+    current_row=next_row(current_row,1)
+    layout.addWidget(QLabel("Net cash from investing activities"), current_row,0,1,2)
+    layout.addWidget(QLabel(str(res[5])), current_row,4)
+#financing
+if (fin_in or fin_out)==True:
+    current_row=next_row(current_row,1)
+    layout.addWidget(QLabel("<b> Cash flows from financing activities </b>"), current_row,0,1,2)
+    if fin_in ==True: 
+        current_row=next_row(current_row,1)
+        layout.addWidget(QLabel("Inflow"), current_row,0,1,2)
+        for i in range(len(wanted_date_entries)): 
+            if wanted_date_entries[i]["category"]=='Financing' and wanted_date_entries[i]["flow_type"]=="Inflow": 
+                current_row=next_row(current_row,1)
+                layout.addWidget(QLabel(wanted_date_entries[i]['entry_title']), current_row,1,1,2)
+                layout.addWidget(QLabel(str(wanted_date_entries[i]['amount'])), current_row,3)
+            if i == len(wanted_date_entries)-1:
+                layout.addWidget(QLabel(str(res[6])), current_row,4)
+    if fin_out==True: 
+        current_row=next_row(current_row,1)
+        layout.addWidget(QLabel("Outflow"), current_row,0,1,2)
+        for i in range(len(wanted_date_entries)): 
+            if wanted_date_entries[i]["category"]=='Financing' and wanted_date_entries[i]["flow_type"]=="Outflow":
+                current_row=next_row(current_row,1) 
+                layout.addWidget(QLabel(wanted_date_entries[i]['entry_title']), current_row,1,1,2)
+                layout.addWidget(QLabel(str(wanted_date_entries[i]['amount'])), current_row,3)
+            if i == len(wanted_date_entries)-1:
+                layout.addWidget(QLabel(str(res[7])), current_row,4)
+    current_row=next_row(current_row,1)
+    layout.addWidget(QLabel("Net cash from financing activities"), current_row,0,1,2)
+    layout.addWidget(QLabel(str(res[8])), current_row,4)
+
+current_row=next_row(current_row,1)
+layout.addWidget(QLabel('Net Increase in Cash in Bank'), current_row,0,1,2)
+layout.addWidget(QLabel(str(res[9])), current_row,4)
+current_row=next_row(current_row,1)
+layout.addWidget(QLabel('Cash in Bank, Previous Day'), current_row,0,1,2)
+layout.addWidget(QLabel(str(wanted_date_entries[0]["cash_in_bank"])), current_row,4)
+current_row=next_row(current_row,1)
+layout.addWidget(QLabel('Cash in Bank, Today'), current_row,0,1,2)
+layout.addWidget(QLabel(str(res[10])), current_row,4)
 
 
 # layout.addWidget(QPushButton('Button (0, 1)'), 0, 1)
@@ -68,8 +159,7 @@ layout.addWidget(QLabel("<b> Cash flows from financing activities </b>"), 7,0,1,
 # layout.addWidget(QPushButton('Button (1, 2)'), 1, 2)
 # layout.addWidget(QPushButton('Button (2, 0)'), 2, 0)
 # layout.addWidget(QPushButton('Button (2, 1) + 2 Columns Span'), 2, 1, 1, 2)
-print(wanted_date_entries)
-print(res)
+
 window.setLayout(layout)
 window.show()
 sys.exit(app.exec_())
