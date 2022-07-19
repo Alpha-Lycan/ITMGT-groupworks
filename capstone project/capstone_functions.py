@@ -101,6 +101,3 @@ def compute_values(scp_dictlist, cib_prevday):
     
     return(op_in,op_out,net_op,inv_in,inv_out,net_inv,fin_in,fin_out,net_fin,net_in_cib,cib_today)
 
-scp_dictlist=get_entries({"entry_title":"bank investment"})
-
-scp_values=compute_values(scp_dictlist,83275)
