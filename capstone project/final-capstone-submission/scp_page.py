@@ -26,19 +26,6 @@ class SCP_Page(QScrollArea):
 
         self.outerLayout = QGridLayout()
 
-        self.separatorLine = QFrame()
-        self.separatorLine.setFrameShape(QFrame.HLine)
-
-        self.separatorLine.setStyleSheet("font: 3pt;")
-        self.separatorLine.setLineWidth(0)
-        self.separatorLine.setMidLineWidth(10)
-
-        rect = self.separatorLine.frameRect()
-        print("frameShape: %s" % rect)
-        print("width: %s" % self.separatorLine.width())
-        print("height: %s" % self.separatorLine.height())
-
-
         self.wanted_date = date
 
         self.entry_list = []
